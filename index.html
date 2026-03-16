@@ -190,19 +190,6 @@ window.dispatchEvent(new CustomEvent('fb-ready'));
     --math-l:#1e1b4b;--phys-l:#3b0a0a;
   }
 }
-  --phys:#DC2626;--phys-l:#FEF2F2;
-  --geo:#059669;--geo-l:#D1FAE5;
-  --chem:#7C3AED;--chem-l:#EDE9FE;
-  --bio:#16A34A;--bio-l:#DCFCE7;
-  --hist:#B45309;--hist-l:#FEF3C7;
-  --eng:#1D4ED8;--eng-l:#DBEAFE;
-  --it:#0891B2;--it-l:#CFFAFE;
-  --gold:#F59E0B;--green:#10B981;--pink:#EC4899;
-  --bg:#ffffff;--surf:#F9FAFB;
-  --bord:rgba(0,0,0,0.1);--bord2:rgba(48, 13, 13, 0.18);
-  --txt:#111827;--mute:#6B7280;
-  --r:12px;--fn:'Nunito',sans-serif;--fnh:'Sora',sans-serif;
-}
 /* end theme system */
 html,body{height:100%;font-family:var(--fn);background:#e5e7eb;color:var(--txt);}
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.15);}
@@ -4767,9 +4754,8 @@ document.addEventListener('DOMContentLoaded', function(){
       if(user && !ST.user){
         ST.user={name:user.displayName||user.email.split('@')[0],email:user.email,uid:user.uid,color:rndClr()};
         await loadFromFirebase(user.uid);
-        localStora
         localStorage.setItem('user',JSON.stringify(ST.user));
-        enterApp()
+        enterApp();
       }
     });
   }
