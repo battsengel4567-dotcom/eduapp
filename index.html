@@ -13,6 +13,8 @@
 <link rel="manifest" id="pwa-manifest"/>
 <title>ЭдуАпп — Матем · Физик · Газарзүй · Хими · Биологи · Түүх</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<!-- FA fallback — module бэлэн болтол хоосон дуудлага алдаа өгөхгүй -->
+<script>window.FA={log:function(){}};</script>
 <!-- Firebase v12 Modular SDK -->
 <script type="module">
 import { initializeApp }                       from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -189,6 +191,20 @@ window.dispatchEvent(new CustomEvent('fb-ready'));
     --txt:#F1F5F9;--mute:#94A3B8;
     --math-l:#1e1b4b;--phys-l:#3b0a0a;
   }
+}
+:root{
+  --phys:#DC2626;--phys-l:#FEF2F2;
+  --geo:#059669;--geo-l:#D1FAE5;
+  --chem:#7C3AED;--chem-l:#EDE9FE;
+  --bio:#16A34A;--bio-l:#DCFCE7;
+  --hist:#B45309;--hist-l:#FEF3C7;
+  --eng:#1D4ED8;--eng-l:#DBEAFE;
+  --it:#0891B2;--it-l:#CFFAFE;
+  --gold:#F59E0B;--green:#10B981;--pink:#EC4899;
+  --bg:#ffffff;--surf:#F9FAFB;
+  --bord:rgba(0,0,0,0.1);--bord2:rgba(48, 13, 13, 0.18);
+  --txt:#111827;--mute:#6B7280;
+  --r:12px;--fn:'Nunito',sans-serif;--fnh:'Sora',sans-serif;
 }
 /* end theme system */
 html,body{height:100%;font-family:var(--fn);background:#e5e7eb;color:var(--txt);}
@@ -1666,7 +1682,7 @@ display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 <div id="textbooks" class="screen">
   <div class="tb-hdr">
     <div class="tb-hdr-title">📖 Сурах бичгийн сан</div>
-    <a href="https://medle.mn" target="_blank" class="tb-medle-btn" style="padding:6px 11px;font-size:11px">🔗 Medle.mn</a>
+
   </div>
   <div style="padding:10px 16px 0">
     <div class="tb-search-bar">
@@ -1705,6 +1721,44 @@ display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
     <button class="bnav-btn" onclick="navTo('leaderboard')"><span class="bnav-icon">🏆</span><span>Харгалзаа</span></button>
     <button class="bnav-btn" onclick="navTo('aitutor')"><span class="bnav-icon">🤖</span><span>AI</span></button>
     <button class="bnav-btn" onclick="navTo('profile')"><span class="bnav-icon">👤</span><span>Профайл</span></button>
+  </div>
+</div>
+
+<!-- BOOK VIEWER SHEET -->
+<div id="tb-viewer-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:800;display:none;align-items:flex-end;justify-content:center;" onclick="closeTBViewer(event)">
+  <div id="tb-viewer-sheet" style="background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-width:480px;display:flex;flex-direction:column;animation:slideUp .3s ease;padding-bottom:env(safe-area-inset-bottom,0);" onclick="event.stopPropagation()">
+    <!-- Handle bar -->
+    <div style="width:36px;height:4px;border-radius:2px;background:var(--bord2);margin:10px auto 0;flex-shrink:0;"></div>
+    <!-- Header -->
+    <div style="padding:14px 16px 12px;display:flex;align-items:center;gap:12px;flex-shrink:0;">
+      <div id="tb-viewer-icon" style="font-size:36px;width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" id="tb-viewer-iconwrap"></div>
+      <div style="flex:1;min-width:0;">
+        <div id="tb-viewer-name" style="font-size:16px;font-weight:900;font-family:var(--fnh);color:var(--txt);line-height:1.3;"></div>
+        <div id="tb-viewer-grade" style="font-size:12px;font-weight:600;color:var(--mute);margin-top:3px;"></div>
+      </div>
+      <button onclick="closeTBViewer()" style="width:32px;height:32px;border-radius:9px;border:.5px solid var(--bord);background:var(--surf);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--mute);">✕</button>
+    </div>
+    <!-- Info rows -->
+    <div style="margin:0 16px;border-radius:13px;border:.5px solid var(--bord);background:var(--surf);overflow:hidden;flex-shrink:0;">
+      <div style="padding:11px 14px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid var(--bord);">
+        <span style="font-size:16px">🏫</span>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:var(--txt);">Сурах бичгийн сан</div>
+          <div style="font-size:11px;font-weight:600;color:var(--mute);">Medle.mn</div>
+        </div>
+        <div id="tb-viewer-badge" style="font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;background:var(--math-l);color:var(--math);"></div>
+      </div>
+      <div style="padding:11px 14px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px">📋</span>
+        <div style="font-size:12px;font-weight:700;color:var(--txt);">Үнэ төлбөргүй нээлттэй эх</div>
+      </div>
+    </div>
+    <!-- Open button -->
+    <div style="padding:16px;">
+      <button id="tb-viewer-openbtn" onclick="" style="width:100%;padding:14px;border-radius:13px;border:none;background:var(--math);color:#fff;font-family:var(--fn);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .15s;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''">
+        📖 Ном нээх
+      </button>
+    </div>
   </div>
 </div>
 
@@ -4689,8 +4743,7 @@ function renderTextbooks(grade){
       banner.style.cssText='border-radius:12px;background:var(--grad-purple);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:4px;';
       banner.innerHTML=`<div style="font-size:24px">${grade<=5?'🌱':grade<=9?'📖':'🎓'}</div>
         <div><div style="font-size:15px;font-weight:900;font-family:var(--fnh)">${grade}-р анги</div>
-        <div style="font-size:11px;font-weight:700;opacity:.75">${lvl} · ${books.length} сурах бичиг</div></div>
-        <a href="https://medle.mn/textbooks/${grade}" target="_blank" onclick="FA.log('medle_visit',{grade:${grade}})" style="margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;text-decoration:none">Medle.mn →</a>`;
+        <div style="font-size:11px;font-weight:700;opacity:.75">${lvl} · ${books.length} сурах бичиг</div></div>`;
       body.appendChild(banner);
     }
     const grid=document.createElement('div');grid.className='tb-grid';
@@ -4707,16 +4760,16 @@ function makeTBCard(b,favs){
 
   const wrapper=document.createElement('div');wrapper.style.position='relative';
 
-  const a=document.createElement('a');
+  const a=document.createElement('div');
   a.className='tb-card';
-  a.href=b.url;a.target='_blank';a.rel='noopener';
   a.style.borderColor=b.color;
-  a.onclick=()=>{trackTBOpen(b);};
+  a.style.cursor='pointer';
+  a.onclick=()=>{trackTBOpen(b);openTBViewer(b);};
   a.innerHTML=`
     <div style="width:42px;height:42px;border-radius:10px;background:${b.bg};display:flex;align-items:center;justify-content:center;font-size:22px">${b.icon}</div>
     <div class="tb-card-name">${esc(b.name)}</div>
     <div class="tb-card-grade">${b.g}-р анги${openCount?` · <span style="color:var(--math)">${openCount}× нээсэн</span>`:''}</div>
-    <div class="tb-card-open" style="color:${b.color}">📖 Medle.mn →</div>`;
+    <div class="tb-card-open" style="color:${b.color}">📖 Нээх</div>`;
 
   // Favorite button
   const favBtn=document.createElement('button');
@@ -4728,6 +4781,27 @@ function makeTBCard(b,favs){
   wrapper.appendChild(a);
   wrapper.appendChild(favBtn);
   return wrapper;
+}
+
+function openTBViewer(b){
+  const ov=document.getElementById('tb-viewer-overlay');
+  document.getElementById('tb-viewer-icon').textContent=b.icon;
+  document.getElementById('tb-viewer-icon').style.background=b.bg||'var(--surf)';
+  document.getElementById('tb-viewer-name').textContent=b.name;
+  document.getElementById('tb-viewer-grade').textContent=b.g+'-р анги · Монгол улсын сурах бичиг';
+  document.getElementById('tb-viewer-badge').textContent=b.g+'-р анги';
+  document.getElementById('tb-viewer-badge').style.background=b.bg||'var(--math-l)';
+  document.getElementById('tb-viewer-badge').style.color=b.color||'var(--math)';
+  document.getElementById('tb-viewer-openbtn').style.background=b.color||'var(--math)';
+  document.getElementById('tb-viewer-openbtn').onclick=()=>{ window.open(b.url,'_blank','noopener'); };
+  ov.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function closeTBViewer(e){
+  if(e&&e.target!==document.getElementById('tb-viewer-overlay'))return;
+  document.getElementById('tb-viewer-overlay').style.display='none';
+  document.body.style.overflow='';
 }
 
 load();
@@ -4754,8 +4828,9 @@ document.addEventListener('DOMContentLoaded', function(){
       if(user && !ST.user){
         ST.user={name:user.displayName||user.email.split('@')[0],email:user.email,uid:user.uid,color:rndClr()};
         await loadFromFirebase(user.uid);
+        localStora
         localStorage.setItem('user',JSON.stringify(ST.user));
-        enterApp();
+        enterApp()
       }
     });
   }
